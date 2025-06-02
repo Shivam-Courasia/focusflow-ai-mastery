@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { AuthPage } from '@/components/AuthPage';
 import { AppLayout } from '@/components/AppLayout';
@@ -11,12 +10,15 @@ import { Settings } from '@/components/Settings';
 import FocusFlowLanding from '@/components/FocusFlowLanding';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { requestNotificationPermission } from '@/utils/notifications';
-import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import HomePage from '@/components/Home';
 
 const AppContent = () => {
   const { user, loading } = useAuth();
+  const location = useLocation();
   const [currentView, setCurrentView] = useState('landing');
   const [isBlocking, setIsBlocking] = useState(false);
+  const navigate = useNavigate();
   
   const {
     sessions,
@@ -34,6 +36,13 @@ const AppContent = () => {
     requestNotificationPermission();
   }, []);
 
+  useEffect(() => {
+    if (user && location.state && location.state.fromLogin) {
+      setCurrentView('timer');
+      navigate('.', { replace: true, state: {} });
+    }
+  }, [user, location.state, navigate]);
+
   // Show loading spinner while checking auth
   if (loading) {
     return (
@@ -45,7 +54,7 @@ const AppContent = () => {
 
   // Show auth page if not logged in
   if (!user) {
-    return <AuthPage />;
+    // return <AuthPage />;
   }
 
   const handleSessionStart = (type: string) => {
@@ -131,10 +140,26 @@ const AppContent = () => {
         {/* CTA to enter app */}
         <div className="fixed bottom-8 right-8 z-50">
           <button
-            onClick={() => setCurrentView('timer')}
+            onClick={() => navigate('/auth')}
             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 font-bold text-lg"
           >
             Launch FocusFlow App →
+          </button>
+        </div>
+      </div>
+    );
+  }
+  if (currentView === 'home') {
+    return (
+      <div>
+        <HomePage />
+        {/* CTA to enter app */}
+        <div className="fixed bottom-8 right-8 z-50">
+          <button
+            onClick={() => setCurrentView('timer')}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 font-bold text-lg"
+          >
+            Continue to Focusing →
           </button>
         </div>
       </div>

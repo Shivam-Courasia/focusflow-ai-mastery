@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,12 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { UserPlus, LogIn, Mail, Lock, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const AuthPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [signupData, setSignupData] = useState({ email: '', password: '', fullName: '' });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +44,7 @@ export const AuthPage: React.FC = () => {
           title: "Welcome back! 🎉",
           description: "You've been logged in successfully.",
         });
+        navigate('/', { state: { fromLogin: true } });
       }
     } catch (error) {
       toast({

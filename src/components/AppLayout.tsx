@@ -17,7 +17,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const navigationItems = [
-    { id: 'landing', label: 'Home', icon: Home },
+    { id: 'home', label: 'Home', icon: Home },
     { id: 'timer', label: 'Timer', icon: Timer },
     { id: 'blocker', label: 'Blocker', icon: Shield },
     { id: 'sessions', label: 'Sessions', icon: Clock },

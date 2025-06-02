@@ -33,7 +33,7 @@ import {
   Clock,
 } from "lucide-react"
 
-export default function FocusFlowLanding() {
+export default function HomePage() {
   const navigate = useNavigate()
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isVolumeOn, setIsVolumeOn] = useState(true)
@@ -197,9 +197,9 @@ export default function FocusFlowLanding() {
                   </a>
                 ))}
 
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105" onClick={() => navigate('/auth')}>
+                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105" onClick={() => navigate('/', { state: { fromLogin: true } })}>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Get Started
+                  ReFocusing
                 </Button>
               </div>
             </div>
@@ -249,12 +249,12 @@ export default function FocusFlowLanding() {
               <div className="flex flex-col sm:flex-row gap-6">
                 <Button
                   size="lg"
-                  onClick={() => navigate('/auth')}
+                  onClick={() => navigate('/', { state: { fromLogin: true } })}
                   className="group bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 hover:from-purple-700 hover:via-pink-700 hover:to-purple-800 text-white px-10 py-6 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 transform hover:scale-105 relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Play className="w-6 h-6 mr-3 group-hover:animate-pulse" />
-                  Start Focusing Now
+                  Get back to Focusing
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                 </Button>
 
