@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,13 +12,17 @@ interface DistractionBlockerProps {
   onBlockingChange: (isBlocking: boolean) => void;
   blockedSites: BlockedSite[];
   onBlockedSitesChange: (sites: BlockedSite[]) => void;
+  onAddSite: (site: Omit<BlockedSite, 'id' | 'addedAt' | 'userId'>) => Promise<void>;
+  onRemoveSite: (siteId: string) => Promise<void>;
 }
 
 export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
   isBlocking,
   onBlockingChange,
   blockedSites,
-  onBlockedSitesChange
+  onBlockedSitesChange,
+  onAddSite,
+  onRemoveSite
 }) => {
   const [newDomain, setNewDomain] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Social Media');
@@ -50,7 +53,7 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
     }
   }, [isBlocking, blockedSites, toast]);
 
-  const addBlockedSite = () => {
+  const addBlockedSite = async () => {
     if (!newDomain.trim()) {
       toast({
         title: "Domain Required",
@@ -83,15 +86,11 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
       return;
     }
 
-    const newSite: BlockedSite = {
-      id: Date.now().toString(),
+    await onAddSite({
       domain: cleanDomain,
-      category: selectedCategory,
-      addedAt: new Date()
-    };
+      category: selectedCategory
+    });
 
-    const updatedSites = [...blockedSites, newSite];
-    onBlockedSitesChange(updatedSites);
     setNewDomain('');
     
     toast({
@@ -100,10 +99,9 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
     });
   };
 
-  const removeBlockedSite = (id: string) => {
+  const removeBlockedSite = async (id: string) => {
     const site = blockedSites.find(s => s.id === id);
-    const updatedSites = blockedSites.filter(site => site.id !== id);
-    onBlockedSitesChange(updatedSites);
+    await onRemoveSite(id);
     
     if (site) {
       toast({

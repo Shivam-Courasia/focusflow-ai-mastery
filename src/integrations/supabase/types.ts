@@ -9,7 +9,132 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      blocked_sites: {
+        Row: {
+          added_at: string | null
+          category: string
+          domain: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          category: string
+          domain: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string | null
+          category?: string
+          domain?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          completed: boolean
+          created_at: string | null
+          duration: number
+          end_time: string
+          id: string
+          interrupted: boolean
+          interruption_reason: string | null
+          start_time: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          completed: boolean
+          created_at?: string | null
+          duration: number
+          end_time: string
+          id?: string
+          interrupted: boolean
+          interruption_reason?: string | null
+          start_time: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string | null
+          duration?: number
+          end_time?: string
+          id?: string
+          interrupted?: boolean
+          interruption_reason?: string | null
+          start_time?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_sound_enabled: boolean
+          long_break: number
+          long_break_interval: number
+          short_break: number
+          updated_at: string | null
+          user_id: string
+          work_duration: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_sound_enabled?: boolean
+          long_break?: number
+          long_break_interval?: number
+          short_break?: number
+          updated_at?: string | null
+          user_id: string
+          work_duration?: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_sound_enabled?: boolean
+          long_break?: number
+          long_break_interval?: number
+          short_break?: number
+          updated_at?: string | null
+          user_id?: string
+          work_duration?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

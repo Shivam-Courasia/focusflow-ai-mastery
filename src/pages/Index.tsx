@@ -1,58 +1,51 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { AuthPage } from '@/components/AuthPage';
 import { AppLayout } from '@/components/AppLayout';
 import { PomodoroTimer } from '@/components/PomodoroTimer';
 import { DistractionBlocker } from '@/components/DistractionBlocker';
 import { SessionLogger } from '@/components/SessionLogger';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import FocusFlowLanding from '@/components/FocusFlowLanding';
-import { SessionData, BlockedSite, UserSettings } from '@/types';
-import { storageService } from '@/utils/storage';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { requestNotificationPermission } from '@/utils/notifications';
+import { useEffect } from 'react';
 
-const Index = () => {
+const AppContent = () => {
+  const { user, loading } = useAuth();
   const [currentView, setCurrentView] = useState('landing');
-  const [sessions, setSessions] = useState<SessionData[]>([]);
-  const [blockedSites, setBlockedSites] = useState<BlockedSite[]>([]);
-  const [settings, setSettings] = useState<UserSettings>({
-    workDuration: 25,
-    shortBreak: 5,
-    longBreak: 15,
-    longBreakInterval: 4,
-    isSoundEnabled: true,
-  });
   const [isBlocking, setIsBlocking] = useState(false);
+  
+  const {
+    sessions,
+    blockedSites,
+    settings,
+    loading: dataLoading,
+    saveSession,
+    saveBlockedSite,
+    removeBlockedSite,
+    updateSettings,
+    clearSessions
+  } = useSupabaseData();
 
-  // Load data on component mount
   useEffect(() => {
-    const loadedSessions = storageService.getSessions();
-    const loadedSites = storageService.getBlockedSites();
-    const loadedSettings = storageService.getSettings();
-
-    setSessions(loadedSessions);
-    setBlockedSites(loadedSites);
-    setSettings(loadedSettings);
-
-    // Request notification permission
     requestNotificationPermission();
   }, []);
 
-  // Save data when it changes
-  useEffect(() => {
-    if (sessions.length > 0) {
-      storageService.saveSessions(sessions);
-    }
-  }, [sessions]);
+  // Show loading spinner while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-lg">Loading...</div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    if (blockedSites.length > 0) {
-      storageService.saveBlockedSites(blockedSites);
-    }
-  }, [blockedSites]);
-
-  useEffect(() => {
-    storageService.saveSettings(settings);
-  }, [settings]);
+  // Show auth page if not logged in
+  if (!user) {
+    return <AuthPage />;
+  }
 
   const handleSessionStart = (type: string) => {
     console.log('Session started:', type);
@@ -61,36 +54,31 @@ const Index = () => {
     }
   };
 
-  const handleSessionEnd = (sessionData: Omit<SessionData, 'id'>) => {
-    const newSession: SessionData = {
-      ...sessionData,
-      id: Date.now().toString()
-    };
-
-    setSessions(prev => [...prev, newSession]);
-
+  const handleSessionEnd = (sessionData: Omit<import('@/types').SessionData, 'id'>) => {
+    saveSession(sessionData);
+    
     // Stop blocking when work session ends
     if (sessionData.type === 'work') {
       setIsBlocking(false);
     }
 
-    console.log('Session ended:', newSession);
+    console.log('Session ended:', sessionData);
   };
 
-  const handleClearSessions = () => {
-    setSessions([]);
-    storageService.saveSessions([]);
-  };
-
-  const handleBlockedSitesChange = (sites: BlockedSite[]) => {
-    setBlockedSites(sites);
-  };
-
-  const handleSettingsChange = (newSettings: UserSettings) => {
-    setSettings(newSettings);
+  const handleBlockedSitesChange = (sites: import('@/types').BlockedSite[]) => {
+    // This function is called by DistractionBlocker when sites are added/removed
+    // The actual saving is handled by individual add/remove functions
   };
 
   const renderCurrentView = () => {
+    if (dataLoading) {
+      return (
+        <div className="text-center py-12">
+          <div className="text-white">Loading your data...</div>
+        </div>
+      );
+    }
+
     switch (currentView) {
       case 'timer':
         return (
@@ -99,7 +87,7 @@ const Index = () => {
             onSessionEnd={handleSessionEnd}
             isBlocking={isBlocking}
             settings={settings}
-            onSettingsChange={handleSettingsChange}
+            onSettingsChange={updateSettings}
           />
         );
       case 'blocker':
@@ -109,13 +97,15 @@ const Index = () => {
             onBlockingChange={setIsBlocking}
             blockedSites={blockedSites}
             onBlockedSitesChange={handleBlockedSitesChange}
+            onAddSite={saveBlockedSite}
+            onRemoveSite={removeBlockedSite}
           />
         );
       case 'sessions':
         return (
           <SessionLogger
             sessions={sessions}
-            onClearSessions={handleClearSessions}
+            onClearSessions={clearSessions}
           />
         );
       case 'analytics':
@@ -155,6 +145,14 @@ const Index = () => {
     <AppLayout currentView={currentView} onViewChange={setCurrentView}>
       {renderCurrentView()}
     </AppLayout>
+  );
+};
+
+const Index = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 
