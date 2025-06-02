@@ -34,15 +34,15 @@ import {
 } from "lucide-react"
 
 export default function FocusFlowLanding() {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isVolumeOn, setIsVolumeOn] = useState(true)
   const [timerCount, setTimerCount] = useState(25)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
-  const handleGetStarted = () => {
-    navigate('/auth')
-  }
+  // const handleGetStarted = () => {
+  //   navigate('/auth')
+  // }
 
   const testimonials = [
     {
@@ -201,10 +201,7 @@ export default function FocusFlowLanding() {
                   </a>
                 ))}
 
-                <Button
-                  onClick={handleGetStarted}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
-                >
+                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2 rounded-xl shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Get Started
                 </Button>
@@ -256,7 +253,7 @@ export default function FocusFlowLanding() {
               <div className="flex flex-col sm:flex-row gap-6">
                 <Button
                   size="lg"
-                  onClick={handleGetStarted}
+                  // onClick={handleGetStarted}
                   className="group bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 hover:from-purple-700 hover:via-pink-700 hover:to-purple-800 text-white px-10 py-6 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-500 transform hover:scale-105 relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
