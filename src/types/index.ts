@@ -25,8 +25,12 @@ export interface UserSettings {
   workDuration: number;
   shortBreak: number;
   longBreak: number;
-  longBreakInterval: number;
-  isSoundEnabled: boolean;
+  pomodorosBeforeLongBreak: number;
+  autoStartBreaks: boolean;
+  autoStartPomodoros: boolean;
+  desktopNotifications: boolean;
+  soundAlerts: boolean;
+  alertVolume: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -164,32 +164,32 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions
         <Card className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-xl border border-purple-500/30">
           <CardContent className="p-4 text-center">
             <Target className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-white">{productivityInsights.totalSessions || 0}</div>
-            <div className="text-sm text-purple-200">Total Sessions</div>
+            <div className="text-2xl font-bold text-slate-800">{productivityInsights.totalSessions || 0}</div>
+            <div className="text-sm text-purple-700">Total Sessions</div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-xl border border-green-500/30">
           <CardContent className="p-4 text-center">
             <Clock className="w-6 h-6 text-green-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-white">{formatTime(productivityInsights.totalFocusTime || 0)}</div>
-            <div className="text-sm text-green-200">Focus Time</div>
+            <div className="text-2xl font-bold text-slate-800">{formatTime(productivityInsights.totalFocusTime || 0)}</div>
+            <div className="text-sm text-green-700">Focus Time</div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-xl border border-blue-500/30">
           <CardContent className="p-4 text-center">
             <TrendingUp className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-white">{(productivityInsights.completionRate || 0).toFixed(1)}%</div>
-            <div className="text-sm text-blue-200">Success Rate</div>
+            <div className="text-2xl font-bold text-slate-800">{(productivityInsights.completionRate || 0).toFixed(1)}%</div>
+            <div className="text-sm text-blue-700">Success Rate</div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 backdrop-blur-xl border border-yellow-500/30">
           <CardContent className="p-4 text-center">
             <Award className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-white">{productivityInsights.currentStreak || 0}</div>
-            <div className="text-sm text-yellow-200">Day Streak</div>
+            <div className="text-2xl font-bold text-slate-800">{productivityInsights.currentStreak || 0}</div>
+            <div className="text-sm text-yellow-700">Day Streak</div>
           </CardContent>
         </Card>
       </div>
@@ -199,7 +199,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions
         <CardHeader>
           <CardTitle className="flex items-center space-x-3">
             <Calendar className="w-6 h-6 text-purple-400" />
-            <span className="text-xl font-bold text-white">Daily Focus Trends</span>
+            <span className="text-xl font-bold text-slate-800">Daily Focus Trends</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -244,8 +244,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions
         <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center space-x-3">
-              <TrendingUp className="w-6 h-6 text-green-400" />
-              <span className="text-lg font-bold text-white">Weekly Progress</span>
+            <TrendingUp className="w-6 h-6 text-green-400" />
+            <span className="text-lg font-bold text-slate-800">Weekly Progress</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -285,8 +285,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions
         <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center space-x-3">
-              <Target className="w-6 h-6 text-blue-400" />
-              <span className="text-lg font-bold text-white">Session Breakdown</span>
+            <Target className="w-6 h-6 text-blue-400" />
+            <span className="text-lg font-bold text-slate-800">Session Breakdown</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -327,35 +327,35 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions
         <CardHeader>
           <CardTitle className="flex items-center space-x-3">
             <Zap className="w-6 h-6 text-yellow-400" />
-            <span className="text-xl font-bold text-white">Productivity Insights</span>
+            <span className="text-xl font-bold text-slate-800">Productivity Insights</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white/5 rounded-lg p-4">
-              <h4 className="font-semibold text-white mb-2">Peak Performance</h4>
-              <p className="text-2xl font-bold text-purple-400">
+              <h4 className="font-semibold text-slate-800 mb-2">Peak Performance</h4>
+              <p className="text-2xl font-bold text-purple-700">
                 {formatHour(productivityInsights.mostProductiveHour || 9)}
               </p>
-              <p className="text-sm text-gray-300">Most productive hour</p>
+              <p className="text-sm text-slate-600">Most productive hour</p>
             </div>
 
             <div className="bg-white/5 rounded-lg p-4">
-              <h4 className="font-semibold text-white mb-2">Average Session</h4>
-              <p className="text-2xl font-bold text-green-400">
+              <h4 className="font-semibold text-slate-800 mb-2">Average Session</h4>
+              <p className="text-2xl font-bold text-green-700">
                 {formatTime(productivityInsights.averageSessionTime || 0)}
               </p>
-              <p className="text-sm text-gray-300">Typical focus duration</p>
+              <p className="text-sm text-slate-600">Typical focus duration</p>
             </div>
 
             <div className="bg-white/5 rounded-lg p-4">
-              <h4 className="font-semibold text-white mb-2">Consistency</h4>
+              <h4 className="font-semibold text-slate-800 mb-2">Consistency</h4>
               <div className="flex items-center space-x-2">
-                <p className="text-2xl font-bold text-blue-400">{productivityInsights.currentStreak || 0}</p>
-                <span className="text-gray-300">/</span>
-                <p className="text-lg text-gray-400">{productivityInsights.longestStreak || 0}</p>
+                <p className="text-2xl font-bold text-blue-700">{productivityInsights.currentStreak || 0}</p>
+                <span className="text-slate-600">/</span>
+                <p className="text-lg text-slate-500">{productivityInsights.longestStreak || 0}</p>
               </div>
-              <p className="text-sm text-gray-300">Current / Best streak</p>
+              <p className="text-sm text-slate-600">Current / Best streak</p>
             </div>
           </div>
 

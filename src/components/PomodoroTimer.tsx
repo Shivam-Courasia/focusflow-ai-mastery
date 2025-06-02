@@ -275,10 +275,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
               {/* Timer Text */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-white mb-2">
+                  <div className="text-6xl font-bold text-slate-800 mb-2">
                     {formatTime(timeLeft)}
                   </div>
-                  <div className={`text-lg font-medium bg-gradient-to-r ${getSessionColor()} bg-clip-text text-transparent`}>
+                  <div className={`text-lg font-medium text-slate-700`}>
                     {currentSession === 'work' && isBlocking ? 'Blocking Active' : getSessionTitle()}
                   </div>
                 </div>
@@ -329,14 +329,14 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
           {/* Session Info */}
           <div className="grid grid-cols-2 gap-4 text-center">
             <div className="bg-white/5 rounded-lg p-3">
-              <div className="text-2xl font-bold text-white">{completedSessions}</div>
-              <div className="text-sm text-gray-300">Completed Sessions</div>
+              <div className="text-2xl font-bold text-slate-800">{completedSessions}</div>
+              <div className="text-sm text-slate-600">Completed Sessions</div>
             </div>
             <div className="bg-white/5 rounded-lg p-3">
-              <div className="text-2xl font-bold text-white">
+              <div className="text-2xl font-bold text-slate-800">
                 {Math.ceil(completedSessions / settings.longBreakInterval)}
               </div>
-              <div className="text-sm text-gray-300">Cycles Complete</div>
+              <div className="text-sm text-slate-600">Cycles Complete</div>
             </div>
           </div>
 

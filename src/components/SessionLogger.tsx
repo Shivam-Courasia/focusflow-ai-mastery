@@ -100,30 +100,30 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center space-x-3">
             <Calendar className="w-6 h-6 text-purple-400" />
-            <span className="text-xl font-bold text-white">Today's Progress</span>
+            <span className="text-xl font-bold text-slate-800">Today's Progress</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white/5 rounded-lg p-4 text-center">
               <Target className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">{todayStats.totalSessions}</div>
-              <div className="text-sm text-gray-300">Sessions Started</div>
+              <div className="text-2xl font-bold text-slate-800">{todayStats.totalSessions}</div>
+              <div className="text-sm text-slate-600">Sessions Started</div>
             </div>
             <div className="bg-white/5 rounded-lg p-4 text-center">
               <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-green-400">{todayStats.completedSessions}</div>
-              <div className="text-sm text-gray-300">Completed</div>
+              <div className="text-2xl font-bold text-green-700">{todayStats.completedSessions}</div>
+              <div className="text-sm text-slate-600">Completed</div>
             </div>
             <div className="bg-white/5 rounded-lg p-4 text-center">
               <Clock className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-blue-400">{formatDuration(todayStats.totalFocusTime)}</div>
-              <div className="text-sm text-gray-300">Focus Time</div>
+              <div className="text-2xl font-bold text-blue-700">{formatDuration(todayStats.totalFocusTime)}</div>
+              <div className="text-sm text-slate-600">Focus Time</div>
             </div>
             <div className="bg-white/5 rounded-lg p-4 text-center">
               <TrendingUp className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-yellow-400">{todayStats.completionRate.toFixed(1)}%</div>
-              <div className="text-sm text-gray-300">Success Rate</div>
+              <div className="text-2xl font-bold text-yellow-700">{todayStats.completionRate.toFixed(1)}%</div>
+              <div className="text-sm text-slate-600">Success Rate</div>
             </div>
           </div>
         </CardContent>
@@ -135,7 +135,7 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <TrendingUp className="w-6 h-6 text-green-400" />
-              <span className="text-xl font-bold text-white">Weekly Summary</span>
+              <span className="text-xl font-bold text-slate-800">Weekly Summary</span>
             </div>
             <Button
               variant="outline"
@@ -150,28 +150,28 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-white/5 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{weekStats.totalSessions}</div>
-              <div className="text-sm text-gray-300">Total Sessions</div>
+              <div className="text-2xl font-bold text-slate-800">{weekStats.totalSessions}</div>
+              <div className="text-sm text-slate-600">Total Sessions</div>
             </div>
             <div className="bg-white/5 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-400">{weekStats.completedSessions}</div>
-              <div className="text-sm text-gray-300">Completed</div>
+              <div className="text-2xl font-bold text-green-700">{weekStats.completedSessions}</div>
+              <div className="text-sm text-slate-600">Completed</div>
             </div>
             <div className="bg-white/5 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-400">{formatDuration(weekStats.totalFocusTime)}</div>
-              <div className="text-sm text-gray-300">Total Focus</div>
+              <div className="text-2xl font-bold text-blue-700">{formatDuration(weekStats.totalFocusTime)}</div>
+              <div className="text-sm text-slate-600">Total Focus</div>
             </div>
             <div className="bg-white/5 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-400">{formatDuration(weekStats.averageSessionTime)}</div>
-              <div className="text-sm text-gray-300">Avg Session</div>
+              <div className="text-2xl font-bold text-purple-700">{formatDuration(weekStats.averageSessionTime)}</div>
+              <div className="text-sm text-slate-600">Avg Session</div>
             </div>
           </div>
 
           {/* Weekly Progress Bar */}
           <div className="bg-white/5 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-300">Weekly Goal Progress</span>
-              <span className="text-sm text-gray-300">{weekStats.completedSessions}/25 sessions</span>
+              <span className="text-sm text-slate-600">Weekly Goal Progress</span>
+              <span className="text-sm text-slate-600">{weekStats.completedSessions}/25 sessions</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-3">
               <div
@@ -186,7 +186,7 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
       {/* Recent Sessions */}
       <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-white">Recent Sessions</CardTitle>
+          <CardTitle className="text-lg font-bold text-slate-800">Recent Sessions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -206,11 +206,11 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
                       <Badge className={`${getSessionTypeColor(session.type)} border text-xs`}>
                         {getSessionTypeLabel(session.type)}
                       </Badge>
-                      <span className="text-sm text-gray-300">
+                      <span className="text-sm text-slate-600">
                         {formatDuration(session.duration)}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-slate-500">
                       {session.startTime.toLocaleTimeString()} - {session.endTime.toLocaleTimeString()}
                     </p>
                     {session.interrupted && session.interruptionReason && (
@@ -222,7 +222,7 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
                   <div className={`text-sm font-medium ${session.completed ? 'text-green-400' : 'text-red-400'}`}>
                     {session.completed ? 'Completed' : 'Interrupted'}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-slate-500">
                     {session.startTime.toLocaleDateString()}
                   </div>
                 </div>
@@ -232,9 +232,9 @@ export const SessionLogger: React.FC<SessionLoggerProps> = ({
 
           {sessions.length === 0 && (
             <div className="text-center py-8">
-              <Clock className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-400">No sessions recorded yet</p>
-              <p className="text-sm text-gray-500">Start a focus session to begin tracking your progress</p>
+              <Clock className="w-12 h-12 text-slate-500 mx-auto mb-3" />
+              <p className="text-slate-500">No sessions recorded yet</p>
+              <p className="text-sm text-slate-400">Start a focus session to begin tracking your progress</p>
             </div>
           )}
         </CardContent>

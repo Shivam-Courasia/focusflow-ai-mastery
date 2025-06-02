@@ -136,7 +136,7 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <div className={`w-3 h-3 rounded-full ${isBlocking ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
-                <span className={`text-sm font-medium ${isBlocking ? 'text-green-400' : 'text-gray-400'}`}>
+                <span className={`text-sm font-medium ${isBlocking ? 'text-green-700' : 'text-slate-700'}`}>
                   {isBlocking ? 'Active' : 'Inactive'}
                 </span>
               </div>
@@ -157,8 +157,8 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
               <div className="flex items-center space-x-3">
                 <AlertTriangle className="w-5 h-5 text-green-400" />
                 <div>
-                  <p className="text-green-400 font-medium">Blocking is currently active</p>
-                  <p className="text-green-300 text-sm">
+                  <p className="text-green-700 font-medium">Blocking is currently active</p>
+                  <p className="text-green-600 text-sm">
                     {blockedSites.length} sites blocked • {blockedAttempts} attempts blocked this session
                   </p>
                 </div>
@@ -168,16 +168,16 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
 
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="bg-white/5 rounded-lg p-3">
-              <div className="text-2xl font-bold text-white">{blockedSites.length}</div>
-              <div className="text-sm text-gray-300">Sites Blocked</div>
+              <div className="text-2xl font-bold text-slate-800">{blockedSites.length}</div>
+              <div className="text-sm text-slate-600">Sites Blocked</div>
             </div>
             <div className="bg-white/5 rounded-lg p-3">
-              <div className="text-2xl font-bold text-green-400">{blockedAttempts}</div>
-              <div className="text-sm text-gray-300">Attempts Blocked</div>
+              <div className="text-2xl font-bold text-green-700">{blockedAttempts}</div>
+              <div className="text-sm text-slate-600">Attempts Blocked</div>
             </div>
             <div className="bg-white/5 rounded-lg p-3">
-              <div className="text-2xl font-bold text-blue-400">{categories.length}</div>
-              <div className="text-sm text-gray-300">Categories</div>
+              <div className="text-2xl font-bold text-blue-700">{categories.length}</div>
+              <div className="text-sm text-slate-600">Categories</div>
             </div>
           </div>
         </CardContent>
@@ -186,7 +186,7 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
       {/* Add New Site */}
       <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-white">Add Website to Block</CardTitle>
+          <CardTitle className="text-lg font-bold text-slate-800">Add Website to Block</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex space-x-3">
@@ -196,13 +196,13 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
                 value={newDomain}
                 onChange={(e) => setNewDomain(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addBlockedSite()}
-                className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                className="bg-white/10 border-white/20 text-slate-800 placeholder-slate-400"
               />
             </div>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-white/10 border border-white/20 rounded-md px-3 py-2 text-white"
+              className="bg-white/10 border border-white/20 rounded-md px-3 py-2 text-slate-800"
             >
               {categories.map(category => (
                 <option key={category} value={category} className="bg-gray-800">
@@ -223,7 +223,7 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
       {/* Blocked Sites List */}
       <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-white">Blocked Websites</CardTitle>
+          <CardTitle className="text-lg font-bold text-slate-800">Blocked Websites</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -235,8 +235,8 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
                 <div className="flex items-center space-x-3">
                   <Globe className="w-4 h-4 text-gray-400" />
                   <div>
-                    <p className="font-medium text-white">{site.domain}</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="font-medium text-slate-800">{site.domain}</p>
+                    <p className="text-sm text-slate-500">
                       Added {site.addedAt.toLocaleDateString()}
                     </p>
                   </div>
@@ -261,8 +261,8 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
           {blockedSites.length === 0 && (
             <div className="text-center py-8">
               <Globe className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-400">No websites blocked yet</p>
-              <p className="text-sm text-gray-500">Add domains above to start blocking distractions</p>
+              <p className="text-slate-600">No websites blocked yet</p>
+              <p className="text-sm text-slate-500">Add domains above to start blocking distractions</p>
             </div>
           )}
         </CardContent>
@@ -271,7 +271,7 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
       {/* Category Breakdown */}
       <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-white">Blocked by Category</CardTitle>
+          <CardTitle className="text-lg font-bold text-slate-800">Blocked by Category</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -282,8 +282,8 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
                   <Badge className={`${getCategoryColor(category)} border mb-2`}>
                     {category}
                   </Badge>
-                  <div className="text-lg font-bold text-white">{count}</div>
-                  <div className="text-xs text-gray-400">sites</div>
+                  <div className="text-lg font-bold text-slate-800">{count}</div>
+                  <div className="text-xs text-slate-500">sites</div>
                 </div>
               );
             })}

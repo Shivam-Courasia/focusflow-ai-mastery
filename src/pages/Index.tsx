@@ -7,6 +7,7 @@ import { PomodoroTimer } from '@/components/PomodoroTimer';
 import { DistractionBlocker } from '@/components/DistractionBlocker';
 import { SessionLogger } from '@/components/SessionLogger';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
+import { Settings } from '@/components/Settings';
 import FocusFlowLanding from '@/components/FocusFlowLanding';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { requestNotificationPermission } from '@/utils/notifications';
@@ -112,10 +113,9 @@ const AppContent = () => {
         return <AnalyticsDashboard sessions={sessions} />;
       case 'settings':
         return (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold text-white mb-4">Settings</h2>
-            <p className="text-gray-300">Settings panel coming soon...</p>
-          </div>
+          <Settings
+            onSave={updateSettings}
+          />
         );
       case 'landing':
       default:
