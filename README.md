@@ -2,6 +2,8 @@
 
 A modern web application built with React, TypeScript, and Shadcn UI, designed to help users master their focus and productivity using AI-powered features.
 
+[🌐 Live Demo](https://focusflow-ai-mastery.vercel.app/)
+
 ## 📋 Project Overview
 
 FocusFlow is a comprehensive productivity tool designed to help knowledge workers maintain focus in today's distraction-filled digital environment. It combines the Pomodoro technique with website blocking and detailed analytics to create an effective focus management system.
