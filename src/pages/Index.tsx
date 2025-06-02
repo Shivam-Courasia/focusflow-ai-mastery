@@ -6,46 +6,56 @@ import { DistractionBlocker } from '@/components/DistractionBlocker';
 import { SessionLogger } from '@/components/SessionLogger';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import FocusFlowLanding from '@/components/FocusFlowLanding';
-
-interface SessionData {
-  id: string;
-  type: 'work' | 'shortBreak' | 'longBreak';
-  startTime: Date;
-  endTime: Date;
-  duration: number;
-  completed: boolean;
-  interrupted: boolean;
-  interruptionReason?: string;
-}
+import { SessionData, BlockedSite, UserSettings } from '@/types';
+import { storageService } from '@/utils/storage';
+import { requestNotificationPermission } from '@/utils/notifications';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState('landing');
   const [sessions, setSessions] = useState<SessionData[]>([]);
+  const [blockedSites, setBlockedSites] = useState<BlockedSite[]>([]);
+  const [settings, setSettings] = useState<UserSettings>({
+    workDuration: 25,
+    shortBreak: 5,
+    longBreak: 15,
+    longBreakInterval: 4,
+    isSoundEnabled: true,
+  });
   const [isBlocking, setIsBlocking] = useState(false);
 
-  // Load sessions from localStorage on component mount
+  // Load data on component mount
   useEffect(() => {
-    const savedSessions = localStorage.getItem('focusflow-sessions');
-    if (savedSessions) {
-      try {
-        const parsedSessions = JSON.parse(savedSessions).map((session: any) => ({
-          ...session,
-          startTime: new Date(session.startTime),
-          endTime: new Date(session.endTime)
-        }));
-        setSessions(parsedSessions);
-      } catch (error) {
-        console.error('Error loading sessions:', error);
-      }
-    }
+    const loadedSessions = storageService.getSessions();
+    const loadedSites = storageService.getBlockedSites();
+    const loadedSettings = storageService.getSettings();
+
+    setSessions(loadedSessions);
+    setBlockedSites(loadedSites);
+    setSettings(loadedSettings);
+
+    // Request notification permission
+    requestNotificationPermission();
   }, []);
 
-  // Save sessions to localStorage whenever sessions change
+  // Save data when it changes
   useEffect(() => {
-    localStorage.setItem('focusflow-sessions', JSON.stringify(sessions));
+    if (sessions.length > 0) {
+      storageService.saveSessions(sessions);
+    }
   }, [sessions]);
 
+  useEffect(() => {
+    if (blockedSites.length > 0) {
+      storageService.saveBlockedSites(blockedSites);
+    }
+  }, [blockedSites]);
+
+  useEffect(() => {
+    storageService.saveSettings(settings);
+  }, [settings]);
+
   const handleSessionStart = (type: string) => {
+    console.log('Session started:', type);
     if (type === 'work') {
       setIsBlocking(true);
     }
@@ -63,11 +73,21 @@ const Index = () => {
     if (sessionData.type === 'work') {
       setIsBlocking(false);
     }
+
+    console.log('Session ended:', newSession);
   };
 
   const handleClearSessions = () => {
     setSessions([]);
-    localStorage.removeItem('focusflow-sessions');
+    storageService.saveSessions([]);
+  };
+
+  const handleBlockedSitesChange = (sites: BlockedSite[]) => {
+    setBlockedSites(sites);
+  };
+
+  const handleSettingsChange = (newSettings: UserSettings) => {
+    setSettings(newSettings);
   };
 
   const renderCurrentView = () => {
@@ -78,6 +98,8 @@ const Index = () => {
             onSessionStart={handleSessionStart}
             onSessionEnd={handleSessionEnd}
             isBlocking={isBlocking}
+            settings={settings}
+            onSettingsChange={handleSettingsChange}
           />
         );
       case 'blocker':
@@ -85,6 +107,8 @@ const Index = () => {
           <DistractionBlocker
             isBlocking={isBlocking}
             onBlockingChange={setIsBlocking}
+            blockedSites={blockedSites}
+            onBlockedSitesChange={handleBlockedSitesChange}
           />
         );
       case 'sessions':

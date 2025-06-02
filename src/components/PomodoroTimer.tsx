@@ -5,42 +5,40 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Play, Pause, Square, SkipForward, Settings, Volume2, VolumeX } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-interface PomodoroSettings {
-  workDuration: number;
-  shortBreak: number;
-  longBreak: number;
-  longBreakInterval: number;
-}
+import { UserSettings, SessionData } from '@/types';
+import { showNotification, playNotificationSound } from '@/utils/notifications';
 
 interface PomodoroTimerProps {
   onSessionStart: (type: string) => void;
-  onSessionEnd: (sessionData: any) => void;
+  onSessionEnd: (sessionData: Omit<SessionData, 'id'>) => void;
   isBlocking: boolean;
+  settings: UserSettings;
+  onSettingsChange: (settings: UserSettings) => void;
 }
 
 export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
   onSessionStart,
   onSessionEnd,
-  isBlocking
+  isBlocking,
+  settings,
+  onSettingsChange
 }) => {
-  const [settings, setSettings] = useState<PomodoroSettings>({
-    workDuration: 25,
-    shortBreak: 5,
-    longBreak: 15,
-    longBreakInterval: 4
-  });
-
   const [timeLeft, setTimeLeft] = useState(settings.workDuration * 60);
   const [isActive, setIsActive] = useState(false);
   const [currentSession, setCurrentSession] = useState<'work' | 'shortBreak' | 'longBreak'>('work');
   const [completedSessions, setCompletedSessions] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
+
+  // Update timeLeft when settings change and timer is not active
+  useEffect(() => {
+    if (!isActive) {
+      setTimeLeft(getDurationInMinutes() * 60);
+    }
+  }, [settings, currentSession, isActive]);
 
   useEffect(() => {
     if (isActive && timeLeft > 0) {
@@ -73,20 +71,29 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
       onSessionEnd(sessionData);
     }
 
-    if (isSoundEnabled) {
-      // Play completion sound
+    if (settings.isSoundEnabled) {
       playNotificationSound();
     }
 
+    const sessionTitle = getSessionTitle();
+    
     if (currentSession === 'work') {
       setCompletedSessions(prev => prev + 1);
       const isLongBreak = (completedSessions + 1) % settings.longBreakInterval === 0;
-      setCurrentSession(isLongBreak ? 'longBreak' : 'shortBreak');
+      const nextSession = isLongBreak ? 'longBreak' : 'shortBreak';
+      setCurrentSession(nextSession);
       setTimeLeft(isLongBreak ? settings.longBreak * 60 : settings.shortBreak * 60);
+      
+      const message = isLongBreak ? "Time for a long break!" : "Time for a short break!";
       
       toast({
         title: "Work Session Complete! 🎉",
-        description: isLongBreak ? "Time for a long break!" : "Time for a short break!",
+        description: message,
+      });
+
+      showNotification("Work Session Complete! 🎉", {
+        body: message,
+        tag: 'pomodoro-complete'
       });
     } else {
       setCurrentSession('work');
@@ -95,6 +102,11 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
       toast({
         title: "Break Time Over! 💪",
         description: "Ready for another focus session?",
+      });
+
+      showNotification("Break Time Over! 💪", {
+        body: "Ready for another focus session?",
+        tag: 'break-complete'
       });
     }
   };
@@ -108,33 +120,24 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
     }
   };
 
-  const playNotificationSound = () => {
-    // Create a simple beep sound
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = 800;
-    oscillator.type = 'sine';
-    
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 1);
-  };
-
   const startTimer = () => {
     setIsActive(true);
     setSessionStartTime(new Date());
     onSessionStart(currentSession);
+
+    toast({
+      title: `${getSessionTitle()} Started! 🚀`,
+      description: `Focus for ${getDurationInMinutes()} minutes`,
+    });
   };
 
   const pauseTimer = () => {
     setIsActive(false);
+    
+    toast({
+      title: "Timer Paused ⏸️",
+      description: "Take a moment if you need to",
+    });
   };
 
   const resetTimer = () => {
@@ -148,15 +151,34 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
         endTime: new Date(),
         duration: getDurationInMinutes(),
         completed: false,
-        interrupted: true
+        interrupted: true,
+        interruptionReason: 'Manual reset'
       };
       onSessionEnd(sessionData);
     }
     
     setSessionStartTime(null);
+    
+    toast({
+      title: "Timer Reset 🔄",
+      description: "Ready to start fresh",
+    });
   };
 
   const skipSession = () => {
+    if (sessionStartTime) {
+      const sessionData = {
+        type: currentSession,
+        startTime: sessionStartTime,
+        endTime: new Date(),
+        duration: getDurationInMinutes(),
+        completed: false,
+        interrupted: true,
+        interruptionReason: 'Session skipped'
+      };
+      onSessionEnd(sessionData);
+    }
+    
     handleSessionComplete();
   };
 
@@ -186,6 +208,11 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
 
   const progress = ((getDurationInMinutes() * 60 - timeLeft) / (getDurationInMinutes() * 60)) * 100;
 
+  const handleSettingsUpdate = (field: keyof UserSettings, value: any) => {
+    const newSettings = { ...settings, [field]: value };
+    onSettingsChange(newSettings);
+  };
+
   return (
     <div className="space-y-6">
       <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20">
@@ -196,10 +223,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsSoundEnabled(!isSoundEnabled)}
+                onClick={() => handleSettingsUpdate('isSoundEnabled', !settings.isSoundEnabled)}
                 className="text-white hover:bg-white/10"
               >
-                {isSoundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                {settings.isSoundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </Button>
               <Button
                 variant="ghost"
@@ -323,8 +350,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
                   <Input
                     type="number"
                     value={settings.workDuration}
-                    onChange={(e) => setSettings(prev => ({ ...prev, workDuration: parseInt(e.target.value) }))}
+                    onChange={(e) => handleSettingsUpdate('workDuration', parseInt(e.target.value) || 25)}
                     className="bg-white/10 border-white/20 text-white"
+                    min="1"
+                    max="120"
                   />
                 </div>
                 <div>
@@ -332,8 +361,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
                   <Input
                     type="number"
                     value={settings.shortBreak}
-                    onChange={(e) => setSettings(prev => ({ ...prev, shortBreak: parseInt(e.target.value) }))}
+                    onChange={(e) => handleSettingsUpdate('shortBreak', parseInt(e.target.value) || 5)}
                     className="bg-white/10 border-white/20 text-white"
+                    min="1"
+                    max="30"
                   />
                 </div>
                 <div>
@@ -341,8 +372,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
                   <Input
                     type="number"
                     value={settings.longBreak}
-                    onChange={(e) => setSettings(prev => ({ ...prev, longBreak: parseInt(e.target.value) }))}
+                    onChange={(e) => handleSettingsUpdate('longBreak', parseInt(e.target.value) || 15)}
                     className="bg-white/10 border-white/20 text-white"
+                    min="1"
+                    max="60"
                   />
                 </div>
                 <div>
@@ -350,8 +383,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
                   <Input
                     type="number"
                     value={settings.longBreakInterval}
-                    onChange={(e) => setSettings(prev => ({ ...prev, longBreakInterval: parseInt(e.target.value) }))}
+                    onChange={(e) => handleSettingsUpdate('longBreakInterval', parseInt(e.target.value) || 4)}
                     className="bg-white/10 border-white/20 text-white"
+                    min="2"
+                    max="10"
                   />
                 </div>
               </div>
@@ -359,6 +394,10 @@ export const PomodoroTimer: React.FC<PomodoroTimerProps> = ({
                 onClick={() => {
                   setTimeLeft(getDurationInMinutes() * 60);
                   setShowSettings(false);
+                  toast({
+                    title: "Settings Saved! ✅",
+                    description: "Your preferences have been updated",
+                  });
                 }}
                 className="w-full bg-purple-600 hover:bg-purple-700"
               >

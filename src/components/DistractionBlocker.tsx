@@ -4,33 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Plus, Trash2, Globe, Clock, AlertTriangle } from 'lucide-react';
+import { Shield, Plus, Trash2, Globe, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-interface BlockedSite {
-  id: string;
-  domain: string;
-  category: string;
-  addedAt: Date;
-}
+import { BlockedSite } from '@/types';
 
 interface DistractionBlockerProps {
   isBlocking: boolean;
   onBlockingChange: (isBlocking: boolean) => void;
+  blockedSites: BlockedSite[];
+  onBlockedSitesChange: (sites: BlockedSite[]) => void;
 }
 
 export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
   isBlocking,
-  onBlockingChange
+  onBlockingChange,
+  blockedSites,
+  onBlockedSitesChange
 }) => {
-  const [blockedSites, setBlockedSites] = useState<BlockedSite[]>([
-    { id: '1', domain: 'facebook.com', category: 'Social Media', addedAt: new Date() },
-    { id: '2', domain: 'twitter.com', category: 'Social Media', addedAt: new Date() },
-    { id: '3', domain: 'youtube.com', category: 'Entertainment', addedAt: new Date() },
-    { id: '4', domain: 'reddit.com', category: 'Social Media', addedAt: new Date() },
-    { id: '5', domain: 'netflix.com', category: 'Entertainment', addedAt: new Date() },
-  ]);
-
   const [newDomain, setNewDomain] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Social Media');
   const [blockedAttempts, setBlockedAttempts] = useState(0);
@@ -46,20 +36,29 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
         if (Math.random() > 0.7) {
           setBlockedAttempts(prev => prev + 1);
           const randomSite = blockedSites[Math.floor(Math.random() * blockedSites.length)];
-          toast({
-            title: "Site Blocked! 🛡️",
-            description: `Blocked attempt to visit ${randomSite.domain}`,
-            duration: 2000,
-          });
+          if (randomSite) {
+            toast({
+              title: "Site Blocked! 🛡️",
+              description: `Blocked attempt to visit ${randomSite.domain}`,
+              duration: 2000,
+            });
+          }
         }
       }, 5000 + Math.random() * 10000); // Random interval between 5-15 seconds
 
       return () => clearInterval(interval);
     }
-  }, [isBlocking, blockedSites]);
+  }, [isBlocking, blockedSites, toast]);
 
   const addBlockedSite = () => {
-    if (!newDomain.trim()) return;
+    if (!newDomain.trim()) {
+      toast({
+        title: "Domain Required",
+        description: "Please enter a domain name",
+        variant: "destructive"
+      });
+      return;
+    }
 
     // Basic domain validation
     const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/;
@@ -91,7 +90,8 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
       addedAt: new Date()
     };
 
-    setBlockedSites(prev => [...prev, newSite]);
+    const updatedSites = [...blockedSites, newSite];
+    onBlockedSitesChange(updatedSites);
     setNewDomain('');
     
     toast({
@@ -102,7 +102,8 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
 
   const removeBlockedSite = (id: string) => {
     const site = blockedSites.find(s => s.id === id);
-    setBlockedSites(prev => prev.filter(site => site.id !== id));
+    const updatedSites = blockedSites.filter(site => site.id !== id);
+    onBlockedSitesChange(updatedSites);
     
     if (site) {
       toast({
@@ -134,11 +135,21 @@ export const DistractionBlocker: React.FC<DistractionBlockerProps> = ({
               <Shield className={`w-6 h-6 ${isBlocking ? 'text-green-400' : 'text-gray-400'}`} />
               <span className="text-xl font-bold text-white">Distraction Blocker</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${isBlocking ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
-              <span className={`text-sm font-medium ${isBlocking ? 'text-green-400' : 'text-gray-400'}`}>
-                {isBlocking ? 'Active' : 'Inactive'}
-              </span>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className={`w-3 h-3 rounded-full ${isBlocking ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
+                <span className={`text-sm font-medium ${isBlocking ? 'text-green-400' : 'text-gray-400'}`}>
+                  {isBlocking ? 'Active' : 'Inactive'}
+                </span>
+              </div>
+              <Button
+                onClick={() => onBlockingChange(!isBlocking)}
+                variant={isBlocking ? "destructive" : "default"}
+                size="sm"
+                className={isBlocking ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
+              >
+                {isBlocking ? 'Stop Blocking' : 'Start Blocking'}
+              </Button>
             </div>
           </CardTitle>
         </CardHeader>
